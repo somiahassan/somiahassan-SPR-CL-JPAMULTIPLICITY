@@ -58,9 +58,13 @@ public class StudentService {
      * @param classroom a persisted, existing classroom passed into this method
      */
     public void assignClassroomToStudent(long studentId, Classroom classroom){
-
+        Optional<Student> studentOptional = studentRepository.findById(studentId);
+        if (studentOptional.isPresent()) {
+            Student student = studentOptional.get();
+            student.setClassroom(classroom); // Assign classroom to student
+            studentRepository.save(student); // Save the updated student entity
+        }
     }
-
     /**
      * TODO: Provided the Id of an already existing student entity, return its assigned classroom by retrieving
      * the 'classroom' field of student. Don't forget to save the changes made to your student entity via the
@@ -69,7 +73,8 @@ public class StudentService {
      * @return the Classroom of the student
      */
     public Classroom getClassroomOfStudent(long studentId){
-        return null;
+        Optional<Student> studentOptional = studentRepository.findById(studentId);
+        return studentOptional.map(Student::getClassroom).orElse(null);
     }
 
     /**
@@ -79,6 +84,11 @@ public class StudentService {
      * @param studentId Id of a persisted, existing student entity
      */
     public void unassignClassroomOfStudent(long studentId){
-
+        Optional<Student> studentOptional = studentRepository.findById(studentId);
+        if (studentOptional.isPresent()) {
+            Student student = studentOptional.get();
+            student.setClassroom(null); // Unassign classroom from student
+            studentRepository.save(student); // Save the updated student entity
+        }
     }
 }
